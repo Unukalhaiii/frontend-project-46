@@ -1,16 +1,13 @@
 #!/usr/bin/env node
 
-import { Command } from "../node_modules/commander/esm.mjs";;
+import { Command } from 'commander/esm.mjs';
+
 const program = new Command();
 
 program
-    .name('gendiff')
-    .description('Compares two configuration files and shows a difference')
-    .version('0.1.0');
-
-program.command('gendiff')
-    .description('Compares two configuration files and shows a difference')
-    .option('-V', '--version', 'output the version number')
-    .option('-h', '--help', 'output usage information');
+  .description('Compares two configuration files and shows a difference')
+  .version('0.1.0', '-V, --version', 'output the version number')
+  .arguments('<filepath1> <filepath2>')
+  .option('-f, --format [type]', 'output format', 'stylish', 'stylish');
 
 program.parse();
