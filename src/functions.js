@@ -2,8 +2,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import _ from 'lodash';
 
-const toJson = (value) => JSON.stringify(value);
-
 const parsFunc = (file) => JSON.parse(file);
 
 const takeObjectFromJson = (file) => {
