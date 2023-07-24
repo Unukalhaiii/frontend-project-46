@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import _ from 'lodash';
 import parsFunc from './parsers.js';
-import chooseFormat from './index.js';
+import chooseFormat from '../formatters/index.js';
 
 export const takeObjectFromJson = (file) => {
   const filePath = path.isAbsolute(file) ? file : path.resolve(process.cwd(), file);

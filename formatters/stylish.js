@@ -1,4 +1,4 @@
-const stylish = (val, replacer = ' ', spacesCount = 1) => {
+const toStylish = (val, replacer = ' ', spacesCount = 1) => {
   const iter = (currentValue, depth) => {
     if (typeof currentValue !== 'object') {
       if (currentValue === undefined) {
@@ -51,4 +51,4 @@ const stylish = (val, replacer = ' ', spacesCount = 1) => {
   return iter(val, 1);
 };
 
-export default stylish;
+export default toStylish;
