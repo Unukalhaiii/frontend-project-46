@@ -29,14 +29,11 @@ const toStylish = (val, replacer = ' ', spacesCount = 1) => {
         }
         return '  ';
       };
-      if (typeof value === 'object') {
-        if (value2 !== undefined) {
-          return `${currentIndent}${findPrefix(prefix)[0]}${item}: ${iter(value, depth + 2)}\n${currentIndent}${findPrefix(prefix)[1]}${item}: ${iter(value2, depth + 2)}`;
-        }
-        return `${currentIndent}${findPrefix(prefix)}${item}: ${iter(value, depth + 2)}`;
-      }
       if (value2 !== undefined) {
         return `${currentIndent}${findPrefix(prefix)[0]}${item}: ${iter(value, depth + 2)}\n${currentIndent}${findPrefix(prefix)[1]}${item}: ${iter(value2, depth + 2)}`;
+      }
+      if (typeof value === 'object') {
+        return `${currentIndent}${findPrefix(prefix)}${item}: ${iter(value, depth + 2)}`;
       }
       const val1 = typeof value === 'object' ? value : iter(value, depth + 2);
       return `${currentIndent}${findPrefix(prefix)}${item}: ${val1}`;
