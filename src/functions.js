@@ -36,7 +36,7 @@ const chekingForObject = (it) => {
 export const findDiff = (tree, tree1) => {
   const json1 = typeof tree === 'string' ? takeObjectFromDoc(tree) : tree;
   const json2 = typeof tree1 === 'string' ? takeObjectFromDoc(tree1) : tree1;
-  
+
   const keys = Object.keys(json1);
   const keys2 = Object.keys(json2);
   const finishedArray = _.sortBy(_.uniq(keys.concat(keys2)));

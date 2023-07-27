@@ -1,7 +1,7 @@
 const toStylish = (val, replacer = ' ', spacesCount = 1) => {
   const iter = (currentValue, depth) => {
     if (typeof currentValue !== 'object') {
-      return currentValue === undefined ? 'undefined' : currentValue.toString()
+      return currentValue === undefined ? 'undefined' : currentValue.toString();
     }
     if (currentValue === null) {
       return 'null';
