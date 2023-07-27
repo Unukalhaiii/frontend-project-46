@@ -2,7 +2,7 @@ import { fileURLToPath } from 'url';
 import * as path from 'path';
 import { dirname } from 'path';
 import * as fs from 'fs';
-import { newResd, takeObjectFromJson } from '../src/functions.js';
+import { findDiff, takeObjectFromDoc } from '../src/functions.js';
 import parsFunc from '../src/parsers.js';
 import toPlain from '../formatters/plain.js';
 import toJson from '../formatters/json.js';
@@ -118,12 +118,12 @@ describe('1-Сhecking the work of readFile', () => {
   });
 });
 
-describe('2-Сhecking the type result of TakeObjectFromJson', () => {
+describe('2-Сhecking the type result of takeObjectFromDoc', () => {
   const res = JSON.parse(readFile('file1.json'));
   const res2 = JSON.parse(readFile('file2.json'));
-  const obj = takeObjectFromJson('file1.json');
-  const obj2 = takeObjectFromJson('file2.json');
-  const obj3 = takeObjectFromJson(getFixturePath('file1.json'));
+  const obj = takeObjectFromDoc('file1.json');
+  const obj2 = takeObjectFromDoc('file2.json');
+  const obj3 = takeObjectFromDoc(getFixturePath('file1.json'));
 
   test('Cheking type of result', () => {
     expect(typeof obj).toEqual('object');
@@ -136,11 +136,11 @@ describe('2-Сhecking the type result of TakeObjectFromJson', () => {
     expect(obj2).toEqual(res2);
   });
   test('Сhecking for exceptions', () => {
-    expect(() => takeObjectFromJson('file1.js')).toThrow();
+    expect(() => takeObjectFromDoc('file1.js')).toThrow();
   });
 });
 
-describe('3-Сhecking the newResd', () => {
+describe('3-Сhecking the findDiff', () => {
   const res = parsFunc(readFile('_fixtures_/file1.json'), getFixturePath('_fixtures_/file1.json'));
   const res2 = parsFunc(readFile('_fixtures_/file2.json'), getFixturePath('_fixtures_/file2.json'));
 
@@ -148,10 +148,10 @@ describe('3-Сhecking the newResd', () => {
     expect(typeof res).toEqual('object');
   });
   test('Сhecking for exceptions', () => {
-    expect(() => takeObjectFromJson('file1.js', 'file2.js')).toThrow();
+    expect(() => takeObjectFromDoc('file1.js', 'file2.js')).toThrow();
   });
   test('Сhecking the result for compliance with the expected', () => {
-    expect(resulted).toEqual(newResd(res, res2));
+    expect(resulted).toEqual(findDiff(res, res2));
   });
 });
 

@@ -12,12 +12,15 @@ The utility is designed to compare two files in json or yaml format and display 
 
 ## Setup
 
+```
 git clone https://github.com/Unukalhaiii/frontend-project-46.git
 cd frontend-project-46
 make install
+```
 
 ## Utilities and Programming language
 
+```
 node.js: 18.14.2
 commander": "^11.0.0
 eslint-plugin-jest": "^27.2.3
@@ -27,15 +30,20 @@ lodash": "^4.17.21
 eslint": "^8.44.0
 eslint-config-airbnb-base": "^15.0.0
 eslint-plugin-import": "^2.27.5
+```
 
 ## help
 
+```
 gendiff -h
+```
 
 ## Test
 
+```
 make test
 make test-coverage
+```
 
 ## Run lint test
 
