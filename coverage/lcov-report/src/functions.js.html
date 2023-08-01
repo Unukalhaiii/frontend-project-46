@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.66% </span>
+                <span class="strong">92.06% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>55/60</span>
+                <span class='fraction'>58/63</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.33% </span>
+                <span class="strong">85.71% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>5/6</span>
+                <span class='fraction'>6/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.66% </span>
+                <span class="strong">92.06% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>55/60</span>
+                <span class='fraction'>58/63</span>
             </div>
         
             
@@ -152,15 +152,25 @@
 <a name='L87'></a><a href='#L87'>87</a>
 <a name='L88'></a><a href='#L88'>88</a>
 <a name='L89'></a><a href='#L89'>89</a>
-<a name='L90'></a><a href='#L90'>90</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -244,14 +254,19 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import * as fs from 'fs';
 import * as path from 'path';
 import _ from 'lodash';
-import parsFunc from './parsers.js';
-import chooseFormat from '../formatters/index.js';
+import parseDoc from './parsers.js';
+import toFormatDoc from './formatters/index.js';
 &nbsp;
-export const takeObjectFromJson = (file) =&gt; {
+export const getFormat = (filePath) =&gt; {
+  return path.extname(filePath).slice(1);
+}
+&nbsp;
+export const takeObjectFromDoc = (file) =&gt; {
   const filePath = path.isAbsolute(file) ? file : path.resolve(process.cwd(), file);
-  const read = fs.readFileSync(`${filePath}`, 'utf8');
-  const readJson = parsFunc(read, filePath);
-  return readJson;
+  const fileContent = fs.readFileSync(`${filePath}`, 'utf8');
+  const format = getFormat(filePath);
+  const readDoc = parseDoc(fileContent, format);
+  return readDoc;
 };
 &nbsp;
 const chekingForObject = (it) =&gt; {
@@ -276,19 +291,19 @@ const chekingForObject = (it) =&gt; {
   return it;
 };
 &nbsp;
-export const newResd = (tree, tree1) =&gt; {
-  const json1 = typeof tree === 'string' ? <span class="branch-0 cbranch-no" title="branch not covered" >takeObjectFromJson(tree) </span>: tree;
-  const json2 = typeof tree1 === 'string' ? <span class="branch-0 cbranch-no" title="branch not covered" >takeObjectFromJson(tree1) </span>: tree1;
+export const findDiff = (tree, tree1) =&gt; {
+  const json1 = typeof tree === 'string' ? <span class="branch-0 cbranch-no" title="branch not covered" >takeObjectFromDoc(tree) </span>: tree;
+  const json2 = typeof tree1 === 'string' ? <span class="branch-0 cbranch-no" title="branch not covered" >takeObjectFromDoc(tree1) </span>: tree1;
 &nbsp;
-  const keys1 = Object.keys(json2);
   const keys = Object.keys(json1);
-  const finishedArray = _.sortBy(_.uniq(keys.concat(keys1)));
+  const keys2 = Object.keys(json2);
+  const finishedArray = _.sortBy(_.uniq(keys.concat(keys2)));
   const result = finishedArray.map((item) =&gt; {
-    if (keys1.includes(item)) {
+    if (keys2.includes(item)) {
       if (typeof json2[item] === 'object' &amp;&amp; json2[item] !== null &amp;&amp; typeof json1[item] === 'object') {
         <span class="missing-if-branch" title="else path not taken" >E</span>if (typeof json1[item] === 'object') {
           const prefix = 'notChanged';
-          const value = newResd(json1[item], json2[item]);
+          const value = findDiff(json1[item], json2[item]);
           return { item, prefix, value };
         }
         const prefix = <span class="cstat-no" title="statement not covered" >'added';</span>
@@ -325,8 +340,8 @@ export const newResd = (tree, tree1) =&gt; {
 };
 &nbsp;
 const gendiff = <span class="fstat-no" title="function not covered" >(f</span>ilepath1, filepath2, format = <span class="branch-0 cbranch-no" title="branch not covered" >'stylish')</span> =&gt; {
-  const preResalt = <span class="cstat-no" title="statement not covered" >newResd(filepath1, filepath2);</span>
-<span class="cstat-no" title="statement not covered" >  return chooseFormat(preResalt, format);</span>
+  const preResult = <span class="cstat-no" title="statement not covered" >findDiff(filepath1, filepath2);</span>
+<span class="cstat-no" title="statement not covered" >  return toFormatDoc(preResult, format);</span>
 };
 &nbsp;
 export default gendiff;
@@ -337,7 +352,7 @@ export default gendiff;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-07-24T15:14:41.869Z
+                at 2023-08-01T15:19:22.049Z
             </div>
         <script src="../prettify.js"></script>
         <script>

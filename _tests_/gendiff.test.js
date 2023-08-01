@@ -2,12 +2,12 @@ import { fileURLToPath } from 'url';
 import * as path from 'path';
 import { dirname } from 'path';
 import * as fs from 'fs';
-import { findDiff, takeObjectFromDoc } from '../src/functions.js';
-import parsFunc from '../src/parsers.js';
-import toPlain from '../formatters/plain.js';
-import toJson from '../formatters/json.js';
-import toStylish from '../formatters/stylish.js';
-import chooseFormat from '../formatters/index.js';
+import { findDiff, takeObjectFromDoc, getFormat } from '../src/gendiff-logic.js';
+import parseDoc from '../src/parsers.js';
+import toPlain from '../src/formatters/plain.js';
+import toJson from '../src/formatters/json.js';
+import toStylish from '../src/formatters/stylish.js';
+import toFormatDoc from '../src/formatters/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -141,8 +141,8 @@ describe('2-Сhecking the type result of takeObjectFromDoc', () => {
 });
 
 describe('3-Сhecking the findDiff', () => {
-  const res = parsFunc(readFile('_fixtures_/file1.json'), getFixturePath('_fixtures_/file1.json'));
-  const res2 = parsFunc(readFile('_fixtures_/file2.json'), getFixturePath('_fixtures_/file2.json'));
+  const res = parseDoc(readFile('_fixtures_/file1.json'), getFormat('_fixtures_/file1.json'));
+  const res2 = parseDoc(readFile('_fixtures_/file2.json'), getFormat('_fixtures_/file2.json'));
 
   test('Cheking type of result', () => {
     expect(typeof res).toEqual('object');
@@ -156,8 +156,8 @@ describe('3-Сhecking the findDiff', () => {
 });
 
 describe('4-Сhecking the Parsers', () => {
-  const res = parsFunc(readFile('_fixtures_/file1.json'), getFixturePath('_fixtures_/file1.json'));
-  const res2 = parsFunc(readFile('_fixtures_/file1.yaml'), getFixturePath('_fixtures_/file1.yaml'));
+  const res = parseDoc(readFile('_fixtures_/file1.json'), getFormat('_fixtures_/file1.json'));
+  const res2 = parseDoc(readFile('_fixtures_/file1.yaml'), getFormat('_fixtures_/file1.yaml'));
 
   test('Cheking type of result', () => {
     expect(typeof res).toEqual('object');
@@ -167,7 +167,7 @@ describe('4-Сhecking the Parsers', () => {
     expect(resultedForTestsOfParser).toEqual(res2);
   });
   test('Сhecking for exceptions', () => {
-    expect(() => parsFunc(readFile('file1.ml'), getFixturePath('file1.ml'))).toThrow();
+    expect(() => parseDoc(readFile('file1.ml'), getFormat('file1.ml'))).toThrow();
   });
 });
 
@@ -194,8 +194,8 @@ describe('6-Сhecking Plain', () => {
 
 describe('7-Сhecking index.js', () => {
   test('Сhecking the result for compliance with the expected', () => {
-    expect(chooseFormat(resulted, 'plain')).toEqual(toPlain(resulted));
-    expect(chooseFormat(resulted, 'json')).toEqual(toJson(resulted));
-    expect(chooseFormat(resulted)).toEqual(toStylish(resulted, ' ', 2));
+    expect(toFormatDoc(resulted, 'plain')).toEqual(toPlain(resulted));
+    expect(toFormatDoc(resulted, 'json')).toEqual(toJson(resulted));
+    expect(toFormatDoc(resulted)).toEqual(toStylish(resulted, ' ', 2));
   });
 });

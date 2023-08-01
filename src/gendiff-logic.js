@@ -1,17 +1,19 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import _ from 'lodash';
-import parsFunc from './parsers.js';
-import chooseFormat from '../formatters/index.js';
+import parseDoc from './parsers.js';
+
+export const getFormat = (filePath) => path.extname(filePath).slice(1);
 
 export const takeObjectFromDoc = (file) => {
   const filePath = path.isAbsolute(file) ? file : path.resolve(process.cwd(), file);
-  const read = fs.readFileSync(`${filePath}`, 'utf8');
-  const readJson = parsFunc(read, filePath);
-  return readJson;
+  const fileContent = fs.readFileSync(`${filePath}`, 'utf8');
+  const format = getFormat(filePath);
+  const readDoc = parseDoc(fileContent, format);
+  return readDoc;
 };
 
-const chekingForObject = (it) => {
+export const chekingForObject = (it) => {
   if (it === null) {
     return null;
   }
@@ -80,10 +82,3 @@ export const findDiff = (tree, tree1) => {
   });
   return result;
 };
-
-const gendiff = (filepath1, filepath2, format = 'stylish') => {
-  const preResult = findDiff(filepath1, filepath2);
-  return chooseFormat(preResult, format);
-};
-
-export default gendiff;
