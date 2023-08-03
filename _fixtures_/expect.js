@@ -1,4 +1,4 @@
-export default getResult = () => [
+const getResult = () => [
   {
     item: 'common',
     prefix: 'notChanged',
@@ -7,4 +7,6 @@ export default getResult = () => [
       { item: 'setting1', prefix: 'notChanged', value: 'Value 1' },
       { item: 'setting2', prefix: 'removed', value: 200 },
     ],
-  }]
+  }];
+
+export default getResult;

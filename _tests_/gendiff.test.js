@@ -2,13 +2,11 @@ import { fileURLToPath } from 'url';
 import * as path from 'path';
 import { dirname } from 'path';
 import * as fs from 'fs';
-import { findDiff, takeObjectFromDoc, getFormat } from '../src/gendiff-logic.js';
-import parseDoc from '../src/parsers.js';
 import toPlain from '../src/formatters/plain.js';
 import toJson from '../src/formatters/json.js';
 import toStylish from '../src/formatters/stylish.js';
 import toFormatDoc from '../src/formatters/index.js';
-import getResult from '../_fixtures_/expect.js'
+import getResult from '../_fixtures_/expect.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
