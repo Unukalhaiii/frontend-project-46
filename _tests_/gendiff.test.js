@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import toPlain from '../src/formatters/plain.js';
 import toJson from '../src/formatters/json.js';
 import toStylish from '../src/formatters/stylish.js';
-import toFormatDoc from '../src/formatters/index.js';
+import toFormatData from '../src/formatters/index.js';
 import getResult from '../_fixtures_/expect.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -28,8 +28,8 @@ describe('2-Сhecking Plain', () => {
 
 describe('3-Сhecking index.js', () => {
   test('Сhecking the result for compliance with the expected', () => {
-    expect(toFormatDoc(getResult(), 'plain')).toEqual(toPlain(getResult()));
-    expect(toFormatDoc(getResult(), 'json')).toEqual(toJson(getResult()));
-    expect(toFormatDoc(getResult())).toEqual(toStylish(getResult(), ' ', 2));
+    expect(toFormatData(getResult(), 'plain')).toEqual(toPlain(getResult()));
+    expect(toFormatData(getResult(), 'json')).toEqual(toJson(getResult()));
+    expect(toFormatData(getResult())).toEqual(toStylish(getResult(), ' ', 2));
   });
 });
