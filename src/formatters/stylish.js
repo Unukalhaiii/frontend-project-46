@@ -8,13 +8,13 @@ const toStylish = (val, replacer = ' ', spacesCount = 1) => {
     }
 
     const indentSize = depth * spacesCount;
-    const currentIn = replacer.repeat(indentSize);
+    const currentIndent = replacer.repeat(indentSize);
     const bracketIndent = replacer.repeat(indentSize - spacesCount);
-    const currentIndent = currentIn === undefined ? '' : currentIn;
+    const actualIndent = currentIndent === undefined ? '' : currentIndent;
     const lines = currentValue.map(({
-      item, prefix, value, value2,
+      item, status, value, value2,
     }) => {
-      const findPrefix = (it) => {
+      const findStatus = (it) => {
         if (it === 'added') {
           return '+ ';
         }
@@ -27,13 +27,13 @@ const toStylish = (val, replacer = ' ', spacesCount = 1) => {
         return '  ';
       };
       if (value2 !== undefined) {
-        return `${currentIndent}${findPrefix(prefix)[0]}${item}: ${iter(value, depth + 2)}\n${currentIndent}${findPrefix(prefix)[1]}${item}: ${iter(value2, depth + 2)}`;
+        return `${actualIndent}${findStatus(status)[0]}${item}: ${iter(value, depth + 2)}\n${actualIndent}${findStatus(status)[1]}${item}: ${iter(value2, depth + 2)}`;
       }
       if (typeof value === 'object') {
-        return `${currentIndent}${findPrefix(prefix)}${item}: ${iter(value, depth + 2)}`;
+        return `${actualIndent}${findStatus(status)}${item}: ${iter(value, depth + 2)}`;
       }
       const val1 = typeof value === 'object' ? value : iter(value, depth + 2);
-      return `${currentIndent}${findPrefix(prefix)}${item}: ${val1}`;
+      return `${actualIndent}${findStatus(status)}${item}: ${val1}`;
     });
     return [
       '{',

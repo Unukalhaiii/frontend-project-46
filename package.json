@@ -6,7 +6,7 @@
   },
   "type": "module",
   "description": "[![Actions Status](https://github.com/Unukalhaiii/frontend-project-46/workflows/hexlet-check/badge.svg)](https://github.com/Unukalhaiii/frontend-project-46/actions)",
-  "main": "src/difference-tree.js",
+  "main": "src/diff-file-generation.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -14,35 +14,35 @@ const valueToString = (value) => {
 };
 
 const toPlain = (val) => {
-  const iter = (currentValue, stringWay = '', depth = 0) => {
+  const iter = (currentValue, pathString = '', depth = 0) => {
     const lines = currentValue.map(({
-      item, prefix, value, value2,
+      item, status, value, value2,
     }) => {
-      const findPrefix = (way) => {
-        if (way !== '') {
-          const arr = way.split('.');
+      const findStatus = (path) => {
+        if (path !== '') {
+          const arr = path.split('.');
           if (arr.length !== depth) {
             _.slice(arr, 0, arr.length - 1);
             return arr.join('.');
           }
         }
-        return way;
+        return path;
       };
-      const prefixWay = findPrefix(stringWay);
-      const wayInString = prefixWay === '' ? item : `.${item}`;
-      if (prefix === 'added') {
-        return `Property '${prefixWay}${wayInString}' was added with value: ${valueToString(value)}`;
+      const pathStatus = findStatus(pathString);
+      const pathInString = pathStatus === '' ? item : `.${item}`;
+      if (status === 'added') {
+        return `Property '${pathStatus}${pathInString}' was added with value: ${valueToString(value)}`;
       }
-      if (prefix === 'removed') {
-        return `Property '${prefixWay}${wayInString}' was removed`;
+      if (status === 'removed') {
+        return `Property '${pathStatus}${pathInString}' was removed`;
       }
-      if (prefix === 'updated') {
-        return `Property '${prefixWay}${wayInString}' was updated. From ${valueToString(value)} to ${valueToString(value2)}`;
+      if (status === 'updated') {
+        return `Property '${pathStatus}${pathInString}' was updated. From ${valueToString(value)} to ${valueToString(value2)}`;
       }
-      if (prefix === 'notChanged') {
-        const pref = findPrefix(stringWay);
-        const newPrefix = `${pref}.${item}`;
-        const newString = pref === '' ? item : newPrefix;
+      if (status === 'notChanged') {
+        const pref = findStatus(pathString);
+        const prefWithItem = `${pref}.${item}`;
+        const newString = pref === '' ? item : prefWithItem;
         if (typeof value === 'object') {
           return iter(value, newString, depth + 1);
         }

@@ -17,17 +17,17 @@ export const chekingForObject = (it) => {
     return null;
   }
   if (typeof it === 'object') {
-    const prefix = '';
+    const status = '';
     const keys = Object.keys(it);
     const newArr = keys.map((element) => {
       if (typeof it[element] === 'object') {
         const value = chekingForObject(it[element]);
         const item = element;
-        return { item, prefix, value };
+        return { item, status, value };
       }
       const value = it[element];
       const item = element;
-      return { item, prefix, value };
+      return { item, status, value };
     });
     return newArr;
   }
