@@ -6,7 +6,7 @@
   },
   "type": "module",
   "description": "Project 'Difference Generator' is designed to compare two files in json or yaml format and display their differences",
-  "main": "src/diff-file-generation.js",
+  "main": "src/gendiff-main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
