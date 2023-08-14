@@ -2,7 +2,7 @@ import toStylish from './stylish.js';
 import toPlain from './plain.js';
 import toJson from './json.js';
 
-const toFormatData = (base, name) => {
+const convertData = (base, name) => {
   const spacesCount = 2;
   switch (name) {
     case 'plain':
@@ -14,4 +14,4 @@ const toFormatData = (base, name) => {
   }
 };
 
-export default toFormatData;
+export default convertData;

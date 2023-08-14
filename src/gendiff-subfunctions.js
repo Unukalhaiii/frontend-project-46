@@ -12,6 +12,11 @@ export const takeObjectFromFile = (file) => {
   return readData;
 };
 
+export const takeDataFromFile = (filepath) => {
+  const data = typeof filepath === 'string' ? takeObjectFromFile(filepath) : filepath;
+  return data;
+};
+
 export const chekingForObject = (it) => {
   if (it === null) {
     return null;

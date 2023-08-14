@@ -1,10 +1,7 @@
 import _ from 'lodash';
-import { takeObjectFromFile, chekingForObject } from './functions-for-difference-tree.js';
+import { chekingForObject } from './gendiff-subfunctions.js';
 
-const findDiff = (file1, file2) => {
-  const data1 = typeof file1 === 'string' ? takeObjectFromFile(file1) : file1;
-  const data2 = typeof file2 === 'string' ? takeObjectFromFile(file2) : file2;
-
+const findDiff = (data1, data2) => {
   const keys = Object.keys(data1);
   const keys2 = Object.keys(data2);
   const finishedArray = _.sortBy(_.union(keys.concat(keys2)));
