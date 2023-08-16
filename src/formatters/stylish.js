@@ -5,7 +5,7 @@ const makeIndent = (n) => '  '.repeat(n);
 const indentSize = 1;
 
 const stringify = (data, depth) => {
-  const closingBracketsIndent = depth * indentSize;
+  const closingBracketsIndent = (depth - 1) * indentSize;
   if (!_.isPlainObject(data)) {
     return data;
   }
@@ -16,7 +16,7 @@ const stringify = (data, depth) => {
       if (_.isPlainObject(value)) {
         return `${makeIndent(depth * indentSize)}${key}: ${stringify(value, depth + 1)}`;
       }
-      return `${makeIndent(depth * indentSize + 2)}${key}: ${value}`;
+      return `${makeIndent(depth * indentSize)}${key}: ${value}`;
     });
 
   return [
@@ -27,19 +27,19 @@ const stringify = (data, depth) => {
 };
 
 const stylish = (node, depth) => {
-  const modifiedLineIndent = depth * indentSize;
+  const modifiedLineIndent = depth * indentSize - 1;
   const closingBracketsIndent = depth * indentSize;
   switch (node.type) {
     case 'added':
-      return `${makeIndent(modifiedLineIndent)}+ ${node.property}: ${stringify(node.value, depth + 1)}`;
+      return `${makeIndent(modifiedLineIndent)}+ ${node.property}: ${stringify(node.value, depth + 2)}`;
     case 'deleted':
-      return `${makeIndent(modifiedLineIndent)}- ${node.property}: ${stringify(node.value, depth + 1)}`;
+      return `${makeIndent(modifiedLineIndent)}- ${node.property}: ${stringify(node.value, depth + 2)}`;
     case 'changed':
-      return `${makeIndent(modifiedLineIndent)}- ${node.property}: ${stringify(node.oldValue, depth + 1)}\n${makeIndent(modifiedLineIndent)}+ ${node.property}: ${stringify(node.newValue, depth + 1)}`;
+      return `${makeIndent(modifiedLineIndent)}- ${node.property}: ${stringify(node.oldValue, depth + 2)}\n${makeIndent(modifiedLineIndent)}+ ${node.property}: ${stringify(node.newValue, depth + 2)}`;
     case 'unchanged':
-      return `${makeIndent(depth * indentSize + 1)}${node.property}: ${stringify(node.value, depth)}`;
+      return `${makeIndent(depth * indentSize)}${node.property}: ${stringify(node.value, depth)}`;
     case 'nested':
-      return [`${makeIndent(depth * indentSize)}${node.property}: {`, ...node.children.map((child) => stylish(child, depth + 1)), `${makeIndent(closingBracketsIndent)}}`].join('\n');
+      return [`${makeIndent(depth * indentSize)}${node.property}: {`, ...node.children.map((child) => stylish(child, depth + 2)), `${makeIndent(closingBracketsIndent)}}`].join('\n');
     case 'root':
       return ['{', ...node.children.map((child) => stylish(child, depth)), '}'].join('\n');
     default:
