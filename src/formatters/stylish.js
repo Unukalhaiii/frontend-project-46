@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 const makeIndent = (n) => '  '.repeat(n);
 
-const indentSize = 1;
+const indentSize = 2;
 
 const stringify = (data, depth) => {
   const closingBracketsIndent = (depth - 1) * indentSize;
@@ -31,17 +31,17 @@ const stylish = (node, depth) => {
   const closingBracketsIndent = depth * indentSize;
   switch (node.type) {
     case 'added':
-      return `${makeIndent(modifiedLineIndent)}+ ${node.property}: ${stringify(node.value, depth + 2)}`;
+      return `${makeIndent(modifiedLineIndent)}+ ${node.property}: ${stringify(node.value, depth + 1)}`;
     case 'deleted':
-      return `${makeIndent(modifiedLineIndent)}- ${node.property}: ${stringify(node.value, depth + 2)}`;
+      return `${makeIndent(modifiedLineIndent)}- ${node.property}: ${stringify(node.value, depth + 1)}`;
     case 'changed':
-      return `${makeIndent(modifiedLineIndent)}- ${node.property}: ${stringify(node.oldValue, depth + 2)}\n${makeIndent(modifiedLineIndent)}+ ${node.property}: ${stringify(node.newValue, depth + 2)}`;
+      return `${makeIndent(modifiedLineIndent)}- ${node.property}: ${stringify(node.oldValue, depth + 1)}\n${makeIndent(modifiedLineIndent)}+ ${node.property}: ${stringify(node.newValue, depth + 1)}`;
     case 'unchanged':
       return `${makeIndent(depth * indentSize)}${node.property}: ${stringify(node.value, depth)}`;
     case 'nested':
-      return [`${makeIndent(depth * indentSize)}${node.property}: {`, ...node.children.map((child) => stylish(child, depth + 2)), `${makeIndent(closingBracketsIndent)}}`].join('\n');
+      return [`${makeIndent(depth * indentSize)}${node.property}: {`, ...node.children.map((child) => stylish(child, depth + 1)), `${makeIndent(closingBracketsIndent)}}`].join('\n');
     case 'root':
-      return ['{', ...node.children.map((child) => stylish(child, depth)), '}'].join('\n');
+      return ['{', ...node.children.map((child) => stylish(child, depth - 1)), '}'].join('\n');
     default:
       throw new Error(`Wrong type: '${node.type}'!`);
   }
