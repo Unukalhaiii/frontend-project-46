@@ -10,16 +10,15 @@ const __dirname = dirname(__filename);
 const getFixturePath = (filename) => path.join(__dirname, '..', filename);
 const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
 
-test.each([
-  [gendiff('__fixtures__/file1.json', '__fixtures__/file2.json'), readFile('__fixtures__/result-for-stylish.txt')],
-  [gendiff('__fixtures__/file1.json', '__fixtures__/file2.json', 'plain'), readFile('__fixtures__/result-for-plain.txt')],
-])('checking result for json files', (recieved, expected) => {
-  expect(recieved).toEqual(expected);
-});
+describe.each([['stylish'], ['plain']])('%s formatter', (formatter) => {
+  const expected = readFile(`__fixtures__/${formatter}.txt`);
 
-test.each([
-  [gendiff('__fixtures__/file1.yaml', '__fixtures__/file2.yml'), readFile('__fixtures__/result-for-stylish.txt')],
-  [gendiff('__fixtures__/file1.yaml', '__fixtures__/file2.yml', 'plain'), readFile('__fixtures__/result-for-plain.txt')],
-])('checking result for yaml files', (recieved, expected) => {
-  expect(recieved).toEqual(expected);
+  test.each([['json'], ['yml']])('%s files', (extension) => {
+    const filepath1 = getFixturePath(`__fixtures__/file1.${extension}`);
+    const filepath2 = getFixturePath(`__fixtures__/file2.${extension}`);
+
+    const result = gendiff(filepath1, filepath2, formatter);
+
+    expect(result).toBe(expected);
+  });
 });

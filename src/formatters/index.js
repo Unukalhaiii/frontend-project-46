@@ -1,17 +1,17 @@
-import toStylish from './stylish.js';
-import toPlain from './plain.js';
-import toJson from './json.js';
+import stylish from './stylish.js';
+import plain from './plain.js';
+import json from './json.js';
 
-const convertData = (base, name) => {
+const formatTree = (tree, name) => {
   const spacesCount = 2;
   switch (name) {
     case 'plain':
-      return toPlain(base);
+      return plain(tree).join('').trim();
     case 'json':
-      return toJson(base);
+      return json(tree);
     default:
-      return toStylish(base, ' ', spacesCount);
+      return stylish(tree, spacesCount);
   }
 };
 
-export default convertData;
+export default formatTree;

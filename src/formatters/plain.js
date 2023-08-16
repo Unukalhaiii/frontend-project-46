@@ -1,62 +1,32 @@
-import _ from 'lodash';
-
-const valueToString = (value) => {
-  if (value === null) {
-    return null;
+const stringify = (data) => {
+  if (typeof data === 'string') {
+    return `'${data}'`;
   }
-  if (typeof value === 'object') {
+  if (typeof data === 'object' && data !== null) {
     return '[complex value]';
   }
-  if (typeof value === 'string') {
-    return `'${value}'`;
+  return data;
+};
+
+const plain = (node, path = []) => {
+  const allKeys = [...path, node.property];
+  const pathString = allKeys.join('.');
+  switch (node.type) {
+    case 'deleted':
+      return `Property '${pathString}' was removed\n`;
+    case 'added':
+      return `Property '${pathString}' was added with value: ${stringify(node.value)}\n`;
+    case 'changed':
+      return `Property '${pathString}' was updated. From ${stringify(node.oldValue)} to ${stringify(node.newValue)}\n`;
+    case 'nested':
+      return node.children.flatMap((child) => plain(child, allKeys));
+    case 'root':
+      return node.children.flatMap((child) => plain(child, []));
+    case 'unchanged':
+      return [];
+    default:
+      throw new Error(`Unknown type of node ${node.type}`);
   }
-  return value;
 };
 
-const toPlain = (val) => {
-  const iter = (currentValue, pathString = '', depth = 0) => {
-    const lines = currentValue.map(({
-      item, status, value, value2,
-    }) => {
-      const findStatus = (path) => {
-        if (path !== '') {
-          const arr = path.split('.');
-          if (arr.length !== depth) {
-            _.slice(arr, 0, arr.length - 1);
-            return arr.join('.');
-          }
-        }
-        return path;
-      };
-      const pathStatus = findStatus(pathString);
-      const pathInString = pathStatus === '' ? item : `.${item}`;
-      if (status === 'added') {
-        return `Property '${pathStatus}${pathInString}' was added with value: ${valueToString(value)}`;
-      }
-      if (status === 'removed') {
-        return `Property '${pathStatus}${pathInString}' was removed`;
-      }
-      if (status === 'updated') {
-        return `Property '${pathStatus}${pathInString}' was updated. From ${valueToString(value)} to ${valueToString(value2)}`;
-      }
-      if (status === 'notChanged') {
-        const pref = findStatus(pathString);
-        const prefWithItem = `${pref}.${item}`;
-        const newString = pref === '' ? item : prefWithItem;
-        if (typeof value === 'object') {
-          return iter(value, newString, depth + 1);
-        }
-        return '';
-      }
-      return ' ';
-    });
-
-    return [
-      ...lines,
-    ].filter(Boolean).join('\n').trim();
-  };
-
-  return iter(val);
-};
-
-export default toPlain;
+export default plain;

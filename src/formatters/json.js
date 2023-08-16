@@ -1,3 +1,3 @@
-const toJson = (value) => JSON.stringify(value, null, ' ');
+const json = (value) => JSON.stringify(value, null, ' ');
 
-export default toJson;
+export default json;

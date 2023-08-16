@@ -1,48 +1,50 @@
-const toStylish = (val, replacer = ' ', spacesCount = 1) => {
-  const iter = (currentValue, depth) => {
-    if (typeof currentValue !== 'object') {
-      return currentValue === undefined ? 'undefined' : currentValue.toString();
-    }
-    if (currentValue === null) {
-      return 'null';
-    }
+import _ from 'lodash';
 
-    const indentSize = depth * spacesCount;
-    const currentIndent = replacer.repeat(indentSize);
-    const bracketIndent = replacer.repeat(indentSize - spacesCount);
-    const actualIndent = currentIndent === undefined ? '' : currentIndent;
-    const lines = currentValue.map(({
-      item, status, value, value2,
-    }) => {
-      const findStatus = (it) => {
-        if (it === 'added') {
-          return '+ ';
-        }
-        if (it === 'removed') {
-          return '- ';
-        }
-        if (it === 'updated') {
-          return ['- ', '+ '];
-        }
-        return '  ';
-      };
-      if (value2 !== undefined) {
-        return `${actualIndent}${findStatus(status)[0]}${item}: ${iter(value, depth + 2)}\n${actualIndent}${findStatus(status)[1]}${item}: ${iter(value2, depth + 2)}`;
+const makeIndent = (n) => '  '.repeat(n);
+
+const indentSize = 2;
+
+const stringify = (data, depth) => {
+  const closingBracketsIndent = (depth - 1) * indentSize;
+  if (!_.isPlainObject(data)) {
+    return data;
+  }
+
+  const lines = Object
+    .entries(data)
+    .map(([key, value]) => {
+      if (_.isPlainObject(value)) {
+        return `${makeIndent(depth * indentSize)}${key}: ${stringify(value, depth + 1)}`;
       }
-      if (typeof value === 'object') {
-        return `${actualIndent}${findStatus(status)}${item}: ${iter(value, depth + 2)}`;
-      }
-      const val1 = typeof value === 'object' ? value : iter(value, depth + 2);
-      return `${actualIndent}${findStatus(status)}${item}: ${val1}`;
+      return `${makeIndent(depth * indentSize)}${key}: ${value}`;
     });
-    return [
-      '{',
-      ...lines,
-      `${bracketIndent}}`,
-    ].join('\n');
-  };
 
-  return iter(val, 1);
+  return [
+    '{',
+    ...lines,
+    `${makeIndent(closingBracketsIndent)}}`,
+  ].join('\n');
 };
 
-export default toStylish;
+const stylish = (node, depth) => {
+  const modifiedLineIndent = depth * indentSize - 1;
+  const closingBracketsIndent = depth * indentSize;
+  switch (node.type) {
+    case 'added':
+      return `${makeIndent(modifiedLineIndent)}+ ${node.property}: ${stringify(node.value, depth + 1)}`;
+    case 'deleted':
+      return `${makeIndent(modifiedLineIndent)}- ${node.property}: ${stringify(node.value, depth + 1)}`;
+    case 'changed':
+      return `${makeIndent(modifiedLineIndent)}- ${node.property}: ${stringify(node.oldValue, depth + 1)}\n${makeIndent(modifiedLineIndent)}+ ${node.property}: ${stringify(node.newValue, depth + 1)}`;
+    case 'unchanged':
+      return `${makeIndent(depth * indentSize)}${node.property}: ${stringify(node.value, depth)}`;
+    case 'nested':
+      return [`${makeIndent(depth * indentSize)}${node.property}: {`, ...node.children.map((child) => stylish(child, depth + 1)), `${makeIndent(closingBracketsIndent)}}`].join('\n');
+    case 'root':
+      return ['{', ...node.children.map((child) => stylish(child, depth)), '}'].join('\n');
+    default:
+      throw new Error(`Wrong type: '${node.type}'!`);
+  }
+};
+
+export default stylish;
